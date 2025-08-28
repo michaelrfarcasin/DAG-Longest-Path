@@ -1,0 +1,46 @@
+Does the solution work for larger graphs?
+Yes, as long as "larger" means up to 1000 vertices and 10,000 edges.
+
+Can you think of any optimizations?
+I suspect I can save some space by only referencing path lengths instead of separately tracking 
+distances, but I'd need to test more to figure out how.
+I might also be able to save some space by mapping vertices to integers and using integer arrays 
+instead of maps.
+
+What's the computational complexity of your solution?
+Time: O(V+E), where V = number vertices, and E = number edges
+Space: I think O(V+E)
+The major space users are:
+adjacencyList - O(V + E), since it has an entry for each vertex and edge
+stack - O(V), since it stores all the vertices
+distances - O(V), since it stores a distance for each vertex
+longestPaths - I think O(V + E), since longestPaths tracks each vertex and for each vertex the path 
+can be up to the number of edges - but edges are split among vertices, so the space requirement for 
+paths is more like E / V, which would make the space requirement for longestPaths O(V*E/V) = O(E). 
+I do track data for each vertex though so it must be at least O(V), so I combine them and say O(V+E).
+
+My original DFS approach had a time complexity closer to O(V*E) since it looked at all paths for all 
+vertices.
+
+Are there any unusual cases that aren't handled?
+I don't think I missed any, but I haven't proven it.
+
+I start with the invalid cases (null input, empty graph) to prove findLongestPath handles them 
+gracefully. Then I built up my algorithm one test at a time, adding more complicated tests as I 
+went on and needed to test more functionality. So I have tests for one vertex with no edges,
+two vertices connected starting from the first, then starting from the second, and so on.
+
+Once I got to three connected vertices, I needed to choose how to handle nodes other than parents
+or children. I started with a depth-first search, and when that worked I added more complicated 
+tests to prove its correctness: starting in the middle of a path, two paths from the source
+where the first or second is longer, a disconnected graph, and so on.
+
+I added a couple tests for graphs I saw online and wanted to prove the function could work for -
+a diamond graph and a slightly more complicated graph.
+
+I wanted to prove that the function could handle vertices with any ids, not just incrementing from 0,
+so I created a test for random ids.
+
+Then I tested performance with ten, one hundred, and one thousand vertices. The depth-first search
+failed earlier than I liked with the hundred vertices test, so I replaced it with a topological sort
+and reran the tests to prove it still satisfied all the old conditions.
